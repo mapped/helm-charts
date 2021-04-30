@@ -9,8 +9,8 @@ server:
   enabled: true
   image:
     repository: temporalio/server
-    tag: 1.6.4
-    pullPolicy: Always
+    tag: 1.9.0
+    pullPolicy: IfNotPresent
 
   kafka:
     host:
@@ -163,7 +163,7 @@ server:
     # replicaCount: 1
     service:
       # type: ClusterIP
-      port: 7934
+      port: 7234
     metrics:
       annotations:
         enabled: true
@@ -181,7 +181,7 @@ server:
     # replicaCount: 1
     service:
       # type: ClusterIP
-      port: 7935
+      port: 7235
     metrics:
       annotations:
         enabled: false
@@ -217,7 +217,7 @@ admintools:
   enabled: true
   image:
     repository: temporalio/admin-tools
-    tag: 1.6.4
+    tag: 1.9.0
     pullPolicy: IfNotPresent
 
   service:
@@ -232,7 +232,7 @@ web:
 
   image:
     repository: temporalio/web
-    tag: 1.6.2
+    tag: 1.9.0
     pullPolicy: IfNotPresent
 
   service:
