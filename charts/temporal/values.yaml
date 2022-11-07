@@ -5,12 +5,23 @@ fullnameOverride: ""
 # (eg. disable helm hook delete policy)
 debug: false
 
+# Custom Service account management
+serviceAccount:
+  # Whether to create service account or not
+  create: false
+
+  # Name of the service account, default: temporal.fullname
+  name:
+
+  # extraAnnotations would let users add additional annotations
+  extraAnnotations:
+
 server:
   enabled: true
   sidecarContainers:
   image:
     repository: temporalio/server
-    tag: 1.13.0
+    tag: 1.18.0
     pullPolicy: IfNotPresent
 
   # Global default settings (can be overridden per service)
@@ -51,6 +62,7 @@ server:
     prometheus:
       timerType: histogram
   podAnnotations: {}
+  podLabels: {}
   resources:
     {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -159,6 +171,7 @@ server:
       prometheus: {}
       # timerType: histogram
     podAnnotations: {}
+    podLabels: {}
     resources: {}
     nodeSelector: {}
     tolerations: []
@@ -177,6 +190,7 @@ server:
       prometheus: {}
       # timerType: histogram
     podAnnotations: {}
+    podLabels: {}
     resources: {}
     nodeSelector: {}
     tolerations: []
@@ -195,6 +209,7 @@ server:
       prometheus: {}
       # timerType: histogram
     podAnnotations: {}
+    podLabels: {}
     resources: {}
     nodeSelector: {}
     tolerations: []
@@ -213,6 +228,7 @@ server:
       prometheus: {}
       # timerType: histogram
     podAnnotations: {}
+    podLabels: {}
     resources: {}
     nodeSelector: {}
     tolerations: []
@@ -222,13 +238,15 @@ admintools:
   enabled: true
   image:
     repository: temporalio/admin-tools
-    tag: 1.13.0
+    tag: 1.18.0
     pullPolicy: IfNotPresent
 
   service:
     type: ClusterIP
     port: 22
     annotations: {}
+  podLabels: {}
+  podAnnotations: {}
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -247,18 +265,21 @@ web:
   replicaCount: 1
 
   image:
-    repository: temporalio/web
-    tag: 1.13.0
+    repository: temporalio/ui
+    tag: latest
     pullPolicy: IfNotPresent
 
   service:
+    # set type to NodePort if access to web needs access from outside the cluster
+    # for more info see https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
     type: ClusterIP
-    port: 8088
+    port: 8080
     annotations: {}
     # loadBalancerIP:
 
   ingress:
     enabled: false
+    # className:
     annotations: {}
     # kubernetes.io/ingress.class: traefik
     # ingress.kubernetes.io/ssl-redirect: "false"
@@ -273,6 +294,7 @@ web:
     #      - chart-example.local
 
   podAnnotations: {}
+  podLabels: {}
 
   resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -305,7 +327,7 @@ elasticsearch:
   replicas: 3
   persistence:
     enabled: false
-  imageTag: 7.10.1
+  imageTag: 7.16.2
   host: elasticsearch-master-headless
   scheme: http
   port: 9200
@@ -352,23 +374,29 @@ grafana:
        isDefault: true
   dashboards:
      default:
-       frontend-github:
-         url: https://raw.githubusercontent.com/temporalio/temporal-dashboards/master/dashboards/frontend.json
+       server-general-github:
+         url: https://raw.githubusercontent.com/temporalio/dashboards/helm/server/server-general.json
          datasource: TemporalMetrics
-       temporal-github:
-         url: https://raw.githubusercontent.com/temporalio/temporal-dashboards/master/dashboards/temporal.json
+       sdk-general-github:
+         url: https://raw.githubusercontent.com/temporalio/dashboards/helm/sdk/sdk-general.json
          datasource: TemporalMetrics
-       history-github:
-         url: https://raw.githubusercontent.com/temporalio/temporal-dashboards/master/dashboards/history.json
+       misc-advanced-visibility-specific-github:
+         url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/advanced-visibility-specific.json
          datasource: TemporalMetrics
-       matching-github:
-         url: https://raw.githubusercontent.com/temporalio/temporal-dashboards/master/dashboards/matching.json
+       misc-clustermonitoring-kubernetes-github:
+         url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/clustermonitoring-kubernetes.json
          datasource: TemporalMetrics
-       clusteroverview-github:
-         url: https://raw.githubusercontent.com/temporalio/temporal-dashboards/master/dashboards/10000.json
+       misc-frontend-service-specific-github:
+         url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/frontend-service-specific.json
          datasource: TemporalMetrics
-       common-github:
-         url: https://raw.githubusercontent.com/temporalio/temporal-dashboards/master/dashboards/common.json
+       misc-history-service-specific-github:
+         url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/history-service-specific.json
+         datasource: TemporalMetrics
+       misc-matching-service-specific-github:
+         url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/matching-service-specific.json
+         datasource: TemporalMetrics
+       misc-worker-service-specific-github:
+         url: https://raw.githubusercontent.com/temporalio/dashboards/helm/misc/worker-service-specific.json
          datasource: TemporalMetrics
 
 cassandra:
